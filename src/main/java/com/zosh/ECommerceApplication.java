@@ -15,11 +15,11 @@ import io.swagger.v3.oas.annotations.info.License;
 		description="Welcome to the documentation for the eCommerce Project API! This API provides a set of endpoints and functionalities to interact with our eCommerce platform programmatically. With this API, you can build applications, integrations, and automate various tasks related to our online store.",
 		version="v1",
 		contact=@Contact(
-				name="Code With Zosh",
-				email="codewithzosh"
+				name="Just Order", //Code With Zosh
+				email="justorder" //codewithzosh
 				),
 		license=@License(
-				name="Code With Zosh"
+				name="Just Order"
 				)
 		))
 public class ECommerceApplication {

@@ -4,25 +4,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zosh.config.MyUserDetails;
 import com.zosh.service.AuthService;
 import com.zosh.utill.JwtUtil;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "${frontend.url}", allowCredentials = "true")
+
 public class AuthController {
 
     @Autowired
@@ -36,6 +35,10 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+    
+ // Inject frontend URL (optional if needed elsewhere)
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     // ✅ Register endpoint with email conflict handling
     @PostMapping("/register")
@@ -60,7 +63,7 @@ public class AuthController {
         return ResponseEntity.ok(result);
     }
 
-    // ✅ Login endpoint
+    //  Login endpoint
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
         String email = request.get("email");
