@@ -52,6 +52,17 @@ public class JwtUtil {
                 .compact();
     }
     
+ // ✅ Generate token using just the email (for Google login)
+    public String generateToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
+                .signWith(getSecretKey())
+                .compact();
+    }
+
+    
     
 
     public boolean validateToken(String token, UserDetails userDetails) {

@@ -1,5 +1,6 @@
 package com.zosh.controller;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,8 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.zosh.modal.User;
+import com.zosh.repository.UserRepository;
 import com.zosh.service.AuthService;
+import com.zosh.utill.GoogleLoginRequest;
 import com.zosh.utill.JwtUtil;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,6 +32,9 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -88,6 +97,57 @@ public class AuthController {
 //    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal MyUserDetails userDetails) {
 //        return ResponseEntity.ok(userDetails.getUser());
 //    }
+    
+    @PostMapping("/google")
+    public ResponseEntity<?> loginWithGoogle(@RequestBody GoogleLoginRequest request) {
+        String email = request.getUser().getEmail();
+        String name = request.getUser().getName();
+        String picture = request.getUser().getPicture();
+
+        if (email == null) {
+            return ResponseEntity.badRequest().body("Email missing in Google user info");
+        }
+
+        System.out.println("📧 Google Login Attempt: " + email);
+
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if (user == null) {
+            try {
+                user = new User();
+                String[] names = name.trim().split(" ", 2);
+                user.setFirstName(names.length > 0 ? names[0] : "");
+                user.setLastName(names.length > 1 ? names[1] : "");
+                user.setEmail(email);
+                user.setPassword(null);
+                user.setRole("USER");
+                user.setMobile(null);
+                user.setCreatedAt(LocalDateTime.now());
+
+                user = userRepository.save(user);
+                System.out.println("✅ New Google user saved: " + user.getId());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                     .body("❌ Failed to save Google user: " + e.getMessage());
+            }
+        } else {
+            System.out.println("👤 Existing user found: " + user.getId());
+        }
+
+        // Generate token
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("user", user);
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
 
     
     
