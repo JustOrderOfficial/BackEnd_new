@@ -21,7 +21,7 @@ import com.zosh.modal.Product;
 import com.zosh.service.ProductService;
 import com.zosh.service.ReviewService;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5176", allowCredentials = "true")
 @RestController
 @RequestMapping("/api")
 public class UserProductController {
