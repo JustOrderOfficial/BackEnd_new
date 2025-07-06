@@ -26,7 +26,7 @@ import com.zosh.service.CartItemService;
 import com.zosh.service.CartService;
 import com.zosh.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5176", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {

@@ -22,7 +22,7 @@ import com.zosh.service.UserService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5176", allowCredentials = "true")
 
 @RestController
 @RequestMapping("/api/cart_items")

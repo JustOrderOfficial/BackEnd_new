@@ -29,11 +29,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    // ✅ Password encoder bean
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
     // ✅ Use AuthenticationConfiguration to build AuthenticationManager
     @Bean
@@ -70,7 +66,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")
+                .allowedOrigins("http://localhost:5176")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

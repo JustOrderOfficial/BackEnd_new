@@ -5,6 +5,7 @@ import com.zosh.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -15,18 +16,25 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // Load user by email (used as username in your case)
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        // Prefix role with ROLE_ for Spring Security
         String roleWithPrefix = "ROLE_" + user.getRole();
+
+        // ✅ Provide a fallback dummy password for Google users
+        String password = user.getPassword();
+        if (password == null || password.isBlank()) {
+            password = passwordEncoder.encode("dummy-password"); // ✅ encode dummy password
+        }
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
-                user.getPassword(),
+                password,
                 Collections.singletonList(new SimpleGrantedAuthority(roleWithPrefix))
         );
     }

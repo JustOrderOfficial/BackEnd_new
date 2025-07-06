@@ -3,6 +3,7 @@ package com.zosh.controller;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,8 +23,6 @@ import com.zosh.repository.UserRepository;
 import com.zosh.service.AuthService;
 import com.zosh.utill.GoogleLoginRequest;
 import com.zosh.utill.JwtUtil;
-
-import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -44,6 +44,10 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     
  // Inject frontend URL (optional if needed elsewhere)
     @Value("${frontend.url}")
@@ -88,10 +92,21 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(token);
         }
 
-        Map<String, String> response = new HashMap<>();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        User user = optionalUser.get();
+
+        Map<String, Object> response = new HashMap<>();
         response.put("token", token);
+        response.put("user", user); // ✅ now you have the actual User object
+
         return ResponseEntity.ok(response);
     }
+
+
     
 //    @GetMapping("/me")
 //    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal MyUserDetails userDetails) {
@@ -119,9 +134,14 @@ public class AuthController {
                 user.setFirstName(names.length > 0 ? names[0] : "");
                 user.setLastName(names.length > 1 ? names[1] : "");
                 user.setEmail(email);
-                user.setPassword(null);
+
+                // ✅ Use dummy password (should be encoded)
+                user.setPassword(passwordEncoder.encode("google_dummy_password"));
+
+                // ✅ Use default value for mobile to avoid null
+                user.setMobile("NA");
+
                 user.setRole("USER");
-                user.setMobile(null);
                 user.setCreatedAt(LocalDateTime.now());
 
                 user = userRepository.save(user);

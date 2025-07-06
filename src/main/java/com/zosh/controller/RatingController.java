@@ -20,7 +20,7 @@ import com.zosh.request.RatingRequest;
 import com.zosh.service.RatingServices;
 import com.zosh.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5176", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/ratings")
 public class RatingController {

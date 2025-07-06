@@ -22,7 +22,7 @@ import com.zosh.modal.User;
 import com.zosh.service.AddressService;
 import com.zosh.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5176", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/addresses") // Base URL for all address APIs
 public class AddressController {

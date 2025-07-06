@@ -14,7 +14,7 @@ import com.zosh.dto.UserDTO;
 import com.zosh.exception.UserException;
 import com.zosh.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5176", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {

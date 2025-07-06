@@ -18,7 +18,7 @@ import com.zosh.service.ProductService;
 import com.zosh.service.ReviewService;
 import com.zosh.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5176", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/reviews")
 public class ReviewController {
